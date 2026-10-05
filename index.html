@@ -270,7 +270,8 @@
       .then(function (r) {
         if (r.ok) return;
         var err = new Error(r.error || "Rejected");
-        err.rejected = true;
+        // "retry" means the sheet was busy, not that the lead is bad.
+        err.rejected = !r.retry;
         throw err;
       });
   }

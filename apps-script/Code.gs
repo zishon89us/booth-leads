@@ -6,6 +6,7 @@ var MAX_LEN = 1000;
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
+  var locked = false;
   try {
     var data = JSON.parse(e.postData.contents);
     if (ALLOWED_FORMS.indexOf(data.form) === -1) return json({ ok: false, error: 'Unknown form' });
@@ -23,7 +24,9 @@ function doPost(e) {
     delete data.form;
     delete data.website;
 
-    lock.waitLock(20000);
+    // Rows are written one at a time. If the queue is too long, ask the sender to retry.
+    locked = lock.tryLock(25000);
+    if (!locked) return json({ ok: false, retry: true, error: 'Busy' });
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName(form) || ss.insertSheet(form);
     var headers = sheet.getLastColumn()
@@ -39,20 +42,25 @@ function doPost(e) {
       if (seen) return json({ ok: true });
     }
 
+    // Only touch the header row when a new field shows up; it is the slow part.
+    var added = false;
     Object.keys(data).forEach(function (k) {
-      if (headers.indexOf(k) === -1) headers.push(k);
+      if (headers.indexOf(k) === -1) { headers.push(k); added = true; }
     });
-    sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
-    sheet.setFrozenRows(1);
+    if (added) {
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
+      sheet.setFrozenRows(1);
+    }
 
     sheet.appendRow(headers.map(function (h) {
       return h === 'timestamp' ? new Date() : clean(data[h]);
     }));
     return json({ ok: true });
   } catch (err) {
-    return json({ ok: false, error: String(err) });
+    // Anything unexpected here is most likely a passing Sheets hiccup.
+    return json({ ok: false, retry: true, error: String(err) });
   } finally {
-    lock.releaseLock();
+    if (locked) lock.releaseLock();
   }
 }
 
