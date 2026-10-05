@@ -1,7 +1,7 @@
 // Everything a non-developer needs to change lives in this file.
 window.FORMS_CONFIG = {
   // Paste the Apps Script web app URL here (see README, step 1).
-  endpoint: "",
+  endpoint: "https://script.google.com/macros/s/AKfycbxsoYiChcjRKtbbuHtm_sk70QIwsdArlIukdA6p4JsWDb_dWyfuws7cdEFFPD9O3n8_Wg/exec",
 
   brand: "Zaavya",
   // Saved with every lead, and shown as the heading in booth staff mode.
