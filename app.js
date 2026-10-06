@@ -21,6 +21,9 @@ var TEMPLATE = `
     <div id="contact"></div>
     <div id="staffFields" hidden>
       <hr>
+      <fieldset class="field" id="docs" hidden>
+        <legend>Email these documents</legend>
+      </fieldset>
       <div class="field">
         <label for="f_staff_notes">My notes</label>
         <textarea id="f_staff_notes" name="staff_notes" maxlength="1000"></textarea>
@@ -162,6 +165,7 @@ var TEMPLATE = `
     });
     if (staff) {
       data.event = cfg.event || "";
+      data.docs_sent = fd.getAll("docs").join(", ");
       data.staff_notes = text("staff_notes");
       data.captured_by = text("captured_by");
       data.badge_raw = badgeRaw;
@@ -275,6 +279,13 @@ var TEMPLATE = `
       showError("Scan a badge, or enter a name, email or phone.");
       return;
     }
+    var docs = documents().filter(function (d) {
+      return data.docs_sent.split(", ").indexOf(d.name) !== -1;
+    });
+    if (docs.length && !data.email) {
+      showError("Add an email address to send the documents to.");
+      return;
+    }
     var q = loadQueue();
     q.push(data);
     if (!saveQueue(q)) {
@@ -289,7 +300,35 @@ var TEMPLATE = `
     window.scrollTo(0, 0);
     toast("Saved " + (data.name || data.email || data.phone || "badge scan"));
     sync();
+    // Hands a ready-to-send email to the phone's own mail app, so it goes from the sender's account.
+    if (docs.length) location.href = buildMailto(cfg.email, data, docs, BASE);
   }
+
+  function documents() { return (cfg.email && cfg.email.documents) || []; }
+
+  // --- email template ---
+  // Fills {placeholders} in the configured subject and body and returns a mailto: link.
+  // mailto cannot carry attachments, so each document goes in as a link.
+  function buildMailto(tpl, lead, docs, base) {
+    var values = {
+      first_name: (lead.name || "").trim().split(/\s+/)[0] || "there",
+      name: lead.name || "",
+      company: lead.company || "",
+      event: lead.event || "",
+      sender: lead.captured_by || "",
+      documents: docs.map(function (d) { return d.name + ": " + new URL(d.url, base).href; }).join("\n"),
+    };
+    var fill = function (text) {
+      return String(text || "").replace(/\{(\w+)\}/g, function (m, k) {
+        return k in values ? values[k] : m;
+      });
+    };
+    // Some mail apps do not decode an escaped "@" in the address.
+    return "mailto:" + encodeURIComponent(lead.email).replace(/%40/g, "@") +
+      "?subject=" + encodeURIComponent(fill(tpl.subject)) +
+      "&body=" + encodeURIComponent(fill(tpl.body).replace(/\r?\n/g, "\r\n"));
+  }
+  // --- end email template ---
 
   // --- contact parsing ---
   // Turns scanned QR text (vCard, MECARD, mailto or a bare email) into contact fields.
@@ -469,6 +508,14 @@ var TEMPLATE = `
       });
       $("seg").appendChild(b);
     });
+
+    documents().forEach(function (d) {
+      $("docs").appendChild(el("label", { class: "check" }, [
+        el("input", { type: "checkbox", name: "docs", value: d.name }),
+        document.createTextNode(d.name),
+      ]));
+    });
+    $("docs").hidden = !documents().length;
 
     $("scan").addEventListener("click", startScan);
     $("scanCancel").addEventListener("click", stopScan);

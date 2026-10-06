@@ -32,6 +32,14 @@ status line under the form switch shows how many are waiting. Do not clear the b
 site data while leads are waiting. Staff rows have `source = staff`, plus `staff_notes`,
 `captured_by` and `captured_at`.
 
+## Emailing documents from the booth app
+
+List PDFs under `email.documents` in `forms.config.js` and put the files in `docs/`. The booth
+app then shows an "Email these documents" section. Ticking documents and tapping **Save lead**
+saves the lead and opens the phone's own mail app with the recipient, subject and message filled
+in, so the email goes from whoever is holding the phone. The documents go in as links, because a
+`mailto:` link cannot attach files. Edit the wording under `email.subject` and `email.body`.
+
 ## Setup
 
 1. **Sheet + backend**

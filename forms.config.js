@@ -9,6 +9,29 @@ window.FORMS_CONFIG = {
   thanks: "Thanks! We'll be in touch shortly.",
   consent: "By submitting, you agree to be contacted about your enquiry.",
 
+  // Booth app: tick documents on a lead and Save opens a ready-to-send email in the phone's mail app.
+  // Placeholders: {first_name} {name} {company} {event} {sender} {documents}
+  email: {
+    subject: "Zaavya: the information you asked for at {event}",
+    body: [
+      "Hi {first_name},",
+      "",
+      "It was great meeting you at {event}. As promised, here is the information we talked about:",
+      "",
+      "{documents}",
+      "",
+      "I'm happy to answer any questions or set up a call.",
+      "",
+      "Best regards,",
+      "{sender}",
+      "Zaavya | www.zaavya.com",
+    ].join("\n"),
+    // Put each PDF in the docs/ folder and list it here. Empty list = the option is hidden.
+    documents: [
+      // { name: "Zaavya overview", url: "docs/zaavya-overview.pdf" },
+    ],
+  },
+
   // Contact fields shared by both forms.
   contact: [
     { name: "name", label: "Full name", type: "text", required: true, autocomplete: "name" },

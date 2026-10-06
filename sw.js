@@ -1,5 +1,5 @@
 // Network first, cached copy when offline. Registered only by the booth page.
-var CACHE = "forms-v4";
+var CACHE = "forms-v5";
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) {
