@@ -1,6 +1,6 @@
 var TEMPLATE = `
+<header class="site"><div><img id="brand" alt="" width="179" height="46"></div></header>
 <main>
-  <div class="brand" id="brand"></div>
 
   <div id="staffbar" hidden>
     <div class="seg" id="seg" role="group" aria-label="Form"></div>
@@ -483,7 +483,8 @@ var TEMPLATE = `
     if ("serviceWorker" in navigator) navigator.serviceWorker.register(BASE + "sw.js", { scope: "./" }).catch(function () {});
   }
 
-  $("brand").textContent = cfg.brand;
+  $("brand").src = BASE + "logo.svg";
+  $("brand").alt = cfg.brand;
   $("consent").textContent = cfg.consent;
   $("thanks").textContent = cfg.thanks;
   cfg.contact.forEach(function (c) { $("contact").appendChild(renderField(c)); });

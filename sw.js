@@ -1,10 +1,10 @@
 // Network first, cached copy when offline. Registered only by the booth page.
-var CACHE = "forms-v3";
+var CACHE = "forms-v4";
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) {
     return c.addAll([
-      "booth/", "app.css", "app.js", "forms.config.js", "vendor/jsQR.js", "manifest.json",
+      "booth/", "app.css", "app.js", "logo.svg", "forms.config.js", "vendor/jsQR.js", "manifest.json",
       "icons/icon-192.png", "icons/icon-512.png",
     ]);
   }));
