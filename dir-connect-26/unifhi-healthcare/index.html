@@ -1,0 +1,11 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Opening form…</title>
+<noscript><meta http-equiv="refresh" content="0; url=../?f=healthcare"></noscript>
+<script>
+// Friendly address for the "healthcare" form; keeps any ?src= tag from the QR code.
+var p = new URLSearchParams(location.search);
+p.set("f", "healthcare");
+location.replace("../?" + p.toString());
+</script>
