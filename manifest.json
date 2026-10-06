@@ -1,8 +1,8 @@
 {
   "name": "Zaavya Booth Leads",
   "short_name": "Leads",
-  "start_url": "./?staff=1",
-  "scope": "./",
+  "start_url": "booth/",
+  "scope": "booth/",
   "display": "standalone",
   "background_color": "#f5f6f8",
   "theme_color": "#0b5fff",

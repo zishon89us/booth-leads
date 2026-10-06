@@ -2,8 +2,12 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
 <title>Opening…</title>
-<noscript><meta http-equiv="refresh" content="0; url=dir-connect-26/"></noscript>
 <script>
-// The app lives in dir-connect-26/; older links and QR codes point here.
-location.replace("dir-connect-26/" + location.search);
+// Old address kept alive for links and QR codes already shared; tracking tags are passed along.
+var p = new URLSearchParams(location.search);
+var dest = p.has("staff") ? "booth/" : p.get("f") === "healthcare" ? "healthcare/" : "assessment/";
+p.delete("staff");
+p.delete("f");
+var q = p.toString();
+location.replace("" + dest + (q ? "?" + q : ""));
 </script>

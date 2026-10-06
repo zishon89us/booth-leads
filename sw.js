@@ -1,10 +1,10 @@
-// Network first, cached copy when offline. Only used by booth staff mode.
-var CACHE = "forms-v2";
+// Network first, cached copy when offline. Registered only by the booth page.
+var CACHE = "forms-v3";
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) {
     return c.addAll([
-      "./", "forms.config.js", "vendor/jsQR.js", "manifest.json",
+      "booth/", "app.css", "app.js", "forms.config.js", "vendor/jsQR.js", "manifest.json",
       "icons/icon-192.png", "icons/icon-512.png",
     ]);
   }));

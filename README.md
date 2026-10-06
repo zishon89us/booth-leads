@@ -1,17 +1,21 @@
-# Expo intake forms
+# Lead capture forms
 
-Two short lead-capture forms served from one static page, writing to a Google Sheet.
+Two short lead-capture forms and a booth scanning app, served as static pages and writing to a Google Sheet.
 
-- General: `/dir-connect-26/general/`
-- Healthcare: `/dir-connect-26/healthcare/` (`/dir-connect-26/unifhi-healthcare/` also works)
+- Assessment (general): `/assessment/`
+- Healthcare: `/healthcare/`
+- Booth app: `/booth/`
 
-- Booth staff: `/dir-connect-26/?staff=1`
+The form pages are not tied to one event. Add tracking tags to a link or QR code to see where
+responses came from, for example `/assessment/?utm_source=dir-connect`. `utm_source`,
+`utm_medium`, `utm_campaign`, `utm_content` and `utm_term` are saved as columns with each response.
 
-Add `?src=<label>` to a form link to tag where a lead came from.
+Shared code lives in `app.js`, `app.css` and `forms.config.js`; each page is a small shell.
+`dir-connect-26/` and the root `index.html` only redirect older links.
 
 ## Booth staff mode
 
-Open `/dir-connect-26/?staff=1` on your own phone or tablet. It must be served over https for the camera to work.
+Open `/booth/` on your own phone or tablet. It must be served over https for the camera to work.
 
 It installs as an app (PWA): on Android Chrome use menu → **Install app**; on iPhone Safari use
 Share → **Add to Home Screen**. Open it once while online so it can cache itself; after that
@@ -35,14 +39,14 @@ site data while leads are waiting. Staff rows have `source = staff`, plus `staff
    - Replace the editor contents with `apps-script/Code.gs`.
    - Deploy → New deployment → Web app. Execute as: **Me**. Who has access: **Anyone**.
    - Copy the web app URL (ends in `/exec`) into `endpoint` in `forms.config.js`.
-2. **Host** the root `index.html` and the whole `dir-connect-26/` folder on any static host (Netlify, Cloudflare Pages, GitHub Pages, S3).
-3. **QR codes**: `./make-qr.sh https://<your-host>` writes PNG and SVG files to `qr/`.
+2. **Host** the whole folder on any static host (Netlify, Cloudflare Pages, GitHub Pages, S3).
+3. **QR codes**: `./make-qr.sh https://<your-host> "utm_source=<event>"` writes PNG and SVG files to `qr/`.
 
 Submissions land in a tab named after the form (`general`, `healthcare`), created on first submit.
 
 ## Changing questions
 
-Edit `dir-connect-26/forms.config.js` only. Question types are `select`, `multi`, and `text`. New fields
+Edit `forms.config.js` only. Question types are `select`, `multi`, and `text`. New fields
 become new columns in the sheet automatically; no backend change is needed.
 
 Changing `Code.gs` requires Deploy → Manage deployments → Edit → New version, which keeps the same URL.
@@ -51,4 +55,4 @@ Changing `Code.gs` requires Deploy → Manage deployments → Edit → New versi
 
     python3 -m http.server 8000
 
-Then open <http://localhost:8000/?f=healthcare>.
+Then open <http://localhost:8000/healthcare/>.
