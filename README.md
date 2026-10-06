@@ -7,7 +7,7 @@ Two short lead-capture forms served from one static page, writing to a Google Sh
 
 - Booth staff: `/dir-connect-26/?staff=1`
 
-Add `&src=<label>` to tag where a scan came from (the QR script uses `src=expo`).
+Add `?src=<label>` to a form link to tag where a lead came from.
 
 ## Booth staff mode
 
@@ -36,7 +36,7 @@ site data while leads are waiting. Staff rows have `source = staff`, plus `staff
    - Deploy → New deployment → Web app. Execute as: **Me**. Who has access: **Anyone**.
    - Copy the web app URL (ends in `/exec`) into `endpoint` in `forms.config.js`.
 2. **Host** the root `index.html` and the whole `dir-connect-26/` folder on any static host (Netlify, Cloudflare Pages, GitHub Pages, S3).
-3. **QR codes**: `./make-qr.sh https://<your-host> [source-tag]` writes PNG and SVG files to `qr/`.
+3. **QR codes**: `./make-qr.sh https://<your-host>` writes PNG and SVG files to `qr/`.
 
 Submissions land in a tab named after the form (`general`, `healthcare`), created on first submit.
 
