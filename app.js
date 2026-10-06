@@ -304,7 +304,14 @@ var TEMPLATE = `
     if (docs.length) location.href = buildMailto(cfg.email, data, docs, BASE);
   }
 
-  function documents() { return (cfg.email && cfg.email.documents) || []; }
+  function documents() {
+    var list = (cfg.email && cfg.email.documents) || [];
+    // /booth/?demo=1 shows sample documents so the email step can be tried before real PDFs exist.
+    if (!list.length && params.has("demo")) {
+      list = [1, 2, 3].map(function (n) { return { name: "Sample document " + n, url: "docs/sample.pdf" }; });
+    }
+    return list;
+  }
 
   // --- email template ---
   // Fills {placeholders} in the configured subject and body and returns a mailto: link.
