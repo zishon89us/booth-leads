@@ -3,7 +3,7 @@
 Two short lead-capture forms served from one static page, writing to a Google Sheet.
 
 - General: `/dir-connect-26/general/`
-- Healthcare: `/dir-connect-26/unifhi-healthcare/`
+- Healthcare: `/dir-connect-26/healthcare/` (`/dir-connect-26/unifhi-healthcare/` also works)
 
 - Booth staff: `/dir-connect-26/?staff=1`
 

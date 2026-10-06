@@ -9,7 +9,7 @@ base="${base%/}/dir-connect-26"
 out="${2:-$(dirname "$0")/qr}"
 mkdir -p "$out"
 
-for path in general unifhi-healthcare; do
+for path in general healthcare; do
   url="$base/$path/"
   # -l H: high error correction, survives glare and smudged prints.
   qrencode -l H -s 20 -m 4 -o "$out/$path.png" "$url"
