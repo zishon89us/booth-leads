@@ -17,7 +17,7 @@
   header.site { background: var(--dark); padding: 14px 16px; }
   header.site img { display: block; height: 36px; width: auto; }
   header.site div { max-width: 480px; margin: 0 auto; }
-  main { max-width: 480px; margin: 0 auto; padding: 24px 16px 48px; }
+  main { max-width: 480px; margin: 0 auto; padding: 24px 16px 48px; overflow-wrap: break-word; }
   h1 {
     font: 700 1.7rem/1.2 var(--font-heading); color: var(--heading); margin: 0 0 8px;
   }
@@ -36,13 +36,14 @@
   input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible {
     outline: 2px solid var(--accent); outline-offset: 2px;
   }
-  fieldset { border: 0; margin: 0; padding: 0; }
+  /* min-width: fieldsets otherwise refuse to shrink below their content on narrow phones. */
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
   .check {
     display: flex; align-items: center; gap: 10px; font-weight: 400; margin: 0;
     padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px;
   }
   .check input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; }
-  .check.other input[type=text] { flex: 1; min-width: 0; width: auto; height: auto; padding: 8px 10px; }
+  .check.other input[type=text] { flex: 1 1 0; min-width: 0; width: 0; height: auto; padding: 8px 10px; }
   .check:has(input:checked) { border-color: var(--accent); background: var(--field); }
   .eyebrow {
     font: 600 .8125rem/1.2 var(--font-body); letter-spacing: .12em; text-transform: uppercase;
