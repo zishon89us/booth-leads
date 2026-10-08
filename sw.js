@@ -1,5 +1,5 @@
 // Network first, cached copy when offline. Registered only by the booth page.
-var CACHE = "forms-v8";
+var CACHE = "forms-v9";
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) {
@@ -19,7 +19,8 @@ self.addEventListener("fetch", function (e) {
   var req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
   e.respondWith(
-    fetch(req)
+    // no-cache: always check the server for a newer copy instead of trusting the browser cache.
+    fetch(req.url, { cache: "no-cache" })
       .then(function (res) {
         var copy = res.clone();
         caches.open(CACHE).then(function (c) { c.put(req, copy); });

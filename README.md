@@ -52,6 +52,12 @@ in, so the email goes from whoever is holding the phone. The documents go in as 
 
 Submissions land in a tab named after the form (`general`, `healthcare`), created on first submit.
 
+## Publishing changes
+
+Run `./publish.sh "what changed"`. It stamps the pages with a new version number, commits and
+pushes. The host tells browsers to keep files for 10 minutes, so a page that was opened recently
+can show the old version until it is reloaded after that time.
+
 ## Changing questions
 
 Edit `forms.config.js` only. Question types are `select`, `multi`, and `text`. New fields
