@@ -10,6 +10,7 @@ var TEMPLATE = `
     </div>
   </div>
 
+  <p class="eyebrow" id="eyebrow"></p>
   <h1 id="title"></h1>
   <p class="intro" id="intro"></p>
 
@@ -46,6 +47,7 @@ var TEMPLATE = `
     <div class="tick" aria-hidden="true">✓</div>
     <h1 id="thanks"></h1>
   </div>
+  <p class="small foot" id="foot"></p>
 </main>
 
 <div id="scanner" hidden>
@@ -90,24 +92,32 @@ var TEMPLATE = `
     return node;
   }
 
-  function labelFor(f, tag, attrs) {
+  function labelFor(f, tag, attrs, quiet) {
     var label = el(tag, attrs, [document.createTextNode(f.label + " ")]);
-    if (!f.required && !staff) label.appendChild(el("span", { class: "opt", text: "(optional)" }));
+    if (!f.required && !staff && !quiet) label.appendChild(el("span", { class: "opt", text: "(optional)" }));
     return label;
   }
 
-  function renderField(f) {
+  // quiet: survey questions are all optional, so they skip the "(optional)" tag.
+  function renderField(f, quiet) {
+    if (f.type === "section") {
+      return el("div", { class: "section" }, [
+        el("h2", { text: f.label }),
+        el("p", { class: "small", text: f.hint || "" }),
+      ]);
+    }
     var id = "f_" + f.name;
     // Nothing is mandatory at the booth: a scan alone is a valid lead.
     var required = f.required && !staff;
-    if (f.type === "multi") {
+    if (f.type === "multi" || f.type === "choice") {
+      var kind = f.type === "multi" ? "checkbox" : "radio";
       var boxes = f.options.map(function (o) {
         return el("label", { class: "check" }, [
-          el("input", { type: "checkbox", name: f.name, value: o }),
+          el("input", { type: kind, name: f.name, value: o, required: required && kind === "radio" }),
           document.createTextNode(o),
         ]);
       });
-      return el("fieldset", { class: "field" }, [labelFor(f, "legend")].concat(boxes));
+      return el("fieldset", { class: "field" }, [labelFor(f, "legend", null, quiet)].concat(boxes));
     }
     var input;
     if (f.type === "select") {
@@ -124,7 +134,7 @@ var TEMPLATE = `
         autocomplete: staff ? "off" : f.autocomplete, maxlength: 200,
       });
     }
-    return el("div", { class: "field" }, [labelFor(f, "label", { for: id }), input]);
+    return el("div", { class: "field" }, [labelFor(f, "label", { for: id }, quiet), input]);
   }
 
   function renderQuestions() {
@@ -135,7 +145,7 @@ var TEMPLATE = `
     $("notice").textContent = def.notice || "";
     $("notice").hidden = !def.notice;
     $("questions").textContent = "";
-    def.questions.forEach(function (q) { $("questions").appendChild(renderField(q)); });
+    def.questions.forEach(function (q) { $("questions").appendChild(renderField(q, true)); });
     Array.prototype.forEach.call($("seg").children, function (b) {
       b.setAttribute("aria-pressed", String(b.value === formId));
     });
@@ -161,6 +171,7 @@ var TEMPLATE = `
     // Campaign tags from the link or QR code, so responses can be traced to where they came from.
     UTM_KEYS.forEach(function (k) { data[k] = (params.get(k) || "").slice(0, 100); });
     def.questions.concat(cfg.contact).forEach(function (f) {
+      if (!f.name) return;
       data[f.name] = f.type === "multi" ? fd.getAll(f.name).join(", ") : text(f.name);
     });
     if (staff) {
@@ -207,6 +218,7 @@ var TEMPLATE = `
         form.hidden = true;
         $("intro").hidden = true;
         $("title").hidden = true;
+        $("eyebrow").hidden = true;
         $("done").hidden = false;
         $("done").focus();
       })
@@ -541,6 +553,9 @@ var TEMPLATE = `
   $("brand").alt = cfg.brand;
   $("consent").textContent = cfg.consent;
   $("thanks").textContent = cfg.thanks;
+  $("foot").textContent = cfg.footer || "";
+  $("eyebrow").textContent = staff ? "" : cfg.brand + " · " + cfg.event;
+  $("eyebrow").hidden = staff;
   cfg.contact.forEach(function (c) { $("contact").appendChild(renderField(c)); });
   if (staff) initStaff();
   renderQuestions();
