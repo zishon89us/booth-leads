@@ -5,6 +5,7 @@ var TIMELINE = {
   name: "timeline",
   label: "Do you have budget and a timeline for this, and when do you expect to move forward?",
   type: "choice",
+  other: true,
   options: [
     "Funded, and moving within 0–3 months",
     "Funded, and moving within 3–6 months",
@@ -65,6 +66,7 @@ window.FORMS_CONFIG = {
   ],
 
   // Question types: "choice" (pick one), "multi" (pick any), "select" (dropdown), "text" (free text),
+  // Add other: true to a choice or multi question for an "Other (please specify)" answer.
   // and "section" (a heading between groups of questions).
   // Source: DIR-Connect-2026-Survey.docx. "name" becomes the column heading in the sheet.
   forms: {
@@ -78,6 +80,7 @@ window.FORMS_CONFIG = {
           name: "priority",
           label: "What is your top technology priority for the next 12 months?",
           type: "choice",
+          other: true,
           options: [
             "Putting AI to work safely, with governance, approvals and audit trails",
             "Modernizing or replacing aging platforms and applications",
@@ -89,6 +92,7 @@ window.FORMS_CONFIG = {
           name: "barrier",
           label: "What is the biggest barrier holding that priority back?",
           type: "choice",
+          other: true,
           options: [
             "Budget pressure: doing more with less, or federal funding uncertainty",
             "Manual, paper-based workflows across departments",
@@ -116,6 +120,7 @@ window.FORMS_CONFIG = {
           name: "priority",
           label: "What is your organization’s top technology priority for the next 12 months?",
           type: "choice",
+          other: true,
           options: [
             "Adopting AI responsibly, with governance, clinical and operational use cases, and staff readiness",
             "Modernizing aging clinical, administrative or financial systems",
@@ -127,6 +132,7 @@ window.FORMS_CONFIG = {
           name: "challenge",
           label: "What is the biggest challenge your organization faces today?",
           type: "choice",
+          other: true,
           options: [
             "Rising costs, staffing shortages and funding pressure",
             "Manual, paper-based or fragmented workflows that slow down staff",

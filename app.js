@@ -68,6 +68,7 @@ var TEMPLATE = `
   // ?staff=1 turns the page into the booth-side capture tool.
   var staff = document.body.dataset.mode === "staff" || params.has("staff");
   var $ = function (id) { return document.getElementById(id); };
+  var OTHER = "__other";
   var UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
   var form = $("form");
 
@@ -117,6 +118,17 @@ var TEMPLATE = `
           document.createTextNode(o),
         ]);
       });
+      if (f.other) {
+        // Free-text answer: typing in the box selects it.
+        var pick = el("input", { type: kind, name: f.name, value: OTHER, "aria-label": "Other" });
+        var own = el("input", {
+          type: "text", name: f.name + "_other", maxlength: 200,
+          placeholder: "Other (please specify)", "aria-label": "Other answer",
+        });
+        own.addEventListener("focus", function () { pick.checked = true; });
+        own.addEventListener("input", function () { pick.checked = true; });
+        boxes.push(el("label", { class: "check other" }, [pick, own]));
+      }
       return el("fieldset", { class: "field" }, [labelFor(f, "legend", null, quiet)].concat(boxes));
     }
     var input;
@@ -172,7 +184,15 @@ var TEMPLATE = `
     UTM_KEYS.forEach(function (k) { data[k] = (params.get(k) || "").slice(0, 100); });
     def.questions.concat(cfg.contact).forEach(function (f) {
       if (!f.name) return;
-      data[f.name] = f.type === "multi" ? fd.getAll(f.name).join(", ") : text(f.name);
+      if (f.type !== "multi" && f.type !== "choice") {
+        data[f.name] = text(f.name);
+        return;
+      }
+      data[f.name] = fd.getAll(f.name).map(function (v) {
+        if (v !== OTHER) return v;
+        var own = text(f.name + "_other");
+        return own ? "Other: " + own : "Other";
+      }).join(", ");
     });
     if (staff) {
       data.event = cfg.event || "";
